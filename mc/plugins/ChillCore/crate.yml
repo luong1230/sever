@@ -1,0 +1,8 @@
+crate:
+  ==: org.bukkit.Location
+  world: world
+  x: -197.0
+  y: 63.0
+  z: 24.0
+  pitch: 0.0
+  yaw: 0.0

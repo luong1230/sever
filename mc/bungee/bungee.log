@@ -1,0 +1,57 @@
+Unbundling libraries to /workspaces/sever/mc/bungee/bundler/libraries
+Launching net.md_5.bungee.BungeeCordLauncher
+10:57:25 [[0;34;1mINFO[m] Using mbed TLS based native cipher.
+[m10:57:25 [[0;34;1mINFO[m] Enabled BungeeCord version git:BungeeCord-Proxy:26.1-R0.1-SNAPSHOT:17d5d8c:2113
+[m10:57:26 [[0;34;1mINFO[m] Not on Windows, attempting to use enhanced EpollEventLoop
+[m10:57:26 [[0;34;1mINFO[m] Epoll is working, utilising it!
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=cmd_alert, file=modules/cmd_alert.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=cmd_find, file=modules/cmd_find.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=cmd_list, file=modules/cmd_list.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=cmd_send, file=modules/cmd_send.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=cmd_server, file=modules/cmd_server.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;34;1mINFO[m] Discovered module: ModuleSpec(name=reconnect_yaml, file=modules/reconnect_yaml.jar, provider=BootstrapModuleSource())
+[m10:57:27 [[0;33;1mWARNING[m] Could not load plugin from file plugins/ver.jar
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1837)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.jar.JarFile.<init>(JarFile.java:333)
+	at java.base/java.util.jar.JarFile.<init>(JarFile.java:306)
+	at java.base/java.util.jar.JarFile.<init>(JarFile.java:276)
+	at net.md_5.bungee.api.plugin.PluginManager.detectPlugins(PluginManager.java:392)
+	at net.md_5.bungee.BungeeCord.start(BungeeCord.java:279)
+	at net.md_5.bungee.BungeeCordLauncher.main(BungeeCordLauncher.java:69)
+	at net.md_5.bungee.Bootstrap$1.run(Bootstrap.java:64)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+[m10:57:27 [[0;34;1mINFO[m] Loaded plugin BuffBan1K version 1.0 by ChillMC
+[m10:57:27 [[0;34;1mINFO[m] Loaded plugin reconnect_yaml version git:reconnect_yaml:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:27 [[0;34;1mINFO[m] Loaded plugin cmd_find version git:cmd_find:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:27 [[0;34;1mINFO[m] Loaded plugin cmd_server version git:cmd_server:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:28 [[0;34;1mINFO[m] [EaglercraftXServer] Loading EaglercraftXServer 1.1.1...
+[m10:57:28 [[0;34;1mINFO[m] [EaglercraftXServer] (Platform: BungeeCord)
+[m10:57:28 [[0;34;1mINFO[m] [EaglercraftXServer] Server Name: "EaglercraftXServer"
+[m10:57:30 [[0;34;1mINFO[m] Loaded plugin EaglercraftXServer version 1.1.1 by lax1dude
+[m10:57:30 [[0;34;1mINFO[m] Loaded plugin cmd_alert version git:cmd_alert:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;34;1mINFO[m] Loaded plugin cmd_send version git:cmd_send:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;34;1mINFO[m] Loaded plugin cmd_list version git:cmd_list:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;33;1mWARNING[m] Forced host server pvp is not defined
+[m10:57:30 [[0;34;1mINFO[m] Enabled plugin BuffBan1K version 1.0 by ChillMC
+[m10:57:30 [[0;34;1mINFO[m] Enabled plugin reconnect_yaml version git:reconnect_yaml:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;34;1mINFO[m] Enabled plugin cmd_find version git:cmd_find:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;34;1mINFO[m] Enabled plugin cmd_server version git:cmd_server:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:30 [[0;34;1mINFO[m] [EaglercraftXServer] Enabling EaglercraftXServer 1.1.1...
+[m10:57:30 [[0;34;1mINFO[m] [EaglercraftXServer] Connecting to skin cache database "jdbc:sqlite:eagler_skins_cache.db"...
+[m10:57:31 [[0;34;1mINFO[m] [EaglercraftXServer] Connected to skin cache database successfully!
+[m10:57:32 [[0;34;1mINFO[m] Enabled plugin EaglercraftXServer version 1.1.1 by lax1dude
+[m10:57:32 [[0;34;1mINFO[m] Enabled plugin cmd_alert version git:cmd_alert:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:32 [[0;34;1mINFO[m] Enabled plugin cmd_send version git:cmd_send:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m10:57:32 [[0;34;1mINFO[m] Enabled plugin cmd_list version git:cmd_list:26.1-R0.1-SNAPSHOT:17d5d8c:2113 by SpigotMC
+[m> 10:57:32 [[0;34;1mINFO[m] [EaglercraftXServer] Listener "listener0" injected into channel [id: 0x5ad5f943, L:/[0:0:0:0:0:0:0:0]:8081] successfully (Generic Netty method)
+[m> 10:57:32 [[0;34;1mINFO[m] Listening on /0.0.0.0:8081
+[m>10:57:35 [[0;34;1mINFO[m] [EaglercraftXServer] You are running the latest version of EaglerXServer
+[m

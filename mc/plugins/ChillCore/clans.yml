@@ -1,0 +1,10 @@
+clan:
+  ADMIN:
+    owner: luong
+    members:
+    - luong
+    level: 3
+player:
+  luong: ADMIN
+invite:
+  hung: ADMIN

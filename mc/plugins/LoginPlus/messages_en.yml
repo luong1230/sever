@@ -1,0 +1,208 @@
+# ║                     Login+  -  messages_en.yml                         ║
+# ║   Every player-visible text. Strict two-color palette:                 ║
+# ║   &7 = gray (body text)   &f = white (highlights)                      ║
+# ║   \n inside a message creates a new line.                              ║
+# ║   Switch language in config.yml:  language: "en" / "ru"                ║
+
+prefix: "&e[&6CHILL MC&e] "
+
+register:
+  prompt: "&fChào mừng bạn! Vui lòng &eĐẶT MẬT KHẨU &fđể chơi: &a/register <matkhau> <nhaplai>"
+  reminder: "&fBạn chưa đặt mật khẩu! Nhập ngay: &a/register <matkhau> <nhaplai>"
+  usage: "&7Cú pháp: &a/register <matkhau> <nhaplaimatkhau>"
+  mismatch: "&cHai mật khẩu không khớp nhau! Vui lòng nhập lại."
+  too-short: "&cMật khẩu quá ngắn - cần ít nhất &f%min% &cký tự."
+  too-long: "&cMật khẩu quá dài - tối đa &f%max% &cký tự."
+  too-weak: "&cMật khẩu quá dễ đoán! Hãy chọn mật khẩu khác."
+  need-uppercase: "&cMật khẩu cần có ít nhất &f1 chữ viết hoa&c."
+  need-symbol: "&cMật khẩu cần có ít nhất &f1 ký tự đặc biệt &c(ví dụ ! ? #)."
+  too-simple: "&cMật khẩu không được chứa ký tự lặp hoặc liên tiếp (như 0000 hay 1234)."
+  already-registered: "&eBạn đã đặt mật khẩu rồi! Hãy nhập mật khẩu: &a/login <matkhau>"
+  ip-limit: "&cĐịa chỉ IP của bạn đã tạo quá nhiều tài khoản."
+  success: "&aĐặt mật khẩu thành công! &fBạn đã được mở khóa di chuyển tại khu Spawn!"
+
+login:
+  countdown: "&fThời gian còn lại: &e%seconds% giây"
+  password-ok: "&aMật khẩu chính xác!"
+  prompt: "&fChào mừng bạn quay lại! Vui lòng &eNHẬP MẬT KHẨU&f: &a/login <matkhau>"
+  reminder: "&fVui lòng nhập mật khẩu để mở khóa: &a/login <matkhau>"
+  usage: "&7Cú pháp: &a/login <matkhau>"
+  success: "&aNhập mật khẩu thành công! &fChúc bạn chơi game vui vẻ tại CHILL MC!"
+  wrong-password: "&cSai mật khẩu! &7(Còn &e%left% &7lần thử)"
+  not-registered: "&cBạn chưa đặt mật khẩu! Hãy dùng: &a/register <matkhau> <nhaplai>"
+  already-logged-in: "&aBạn đã đăng nhập rồi!"
+
+logout:
+  success: "&eĐã đăng xuất! Dùng &a/login <matkhau> &eđể tiếp tục chơi."
+
+session:
+  resumed: "&aĐã khôi phục phiên đăng nhập &f- chào mừng bạn quay lại!"
+  resumed-needs-2fa: "&fSession restored &7- welcome back!"
+
+changepassword:
+  usage: "&7Cú pháp: &a/changepassword <matkhauCu> <matkhauMoi>"
+  wrong-password: "&cMật khẩu hiện tại không chính xác."
+  success: "&aĐổi mật khẩu thành công!"
+
+unregister:
+  usage: "&7Usage: &f/unregister <password>"
+
+twofactor:
+  usage: "&72FA commands:\n&f/2fa setup totp &7- Google Authenticator (offline app)\n&f/2fa setup discord <your Discord ID> &7- codes via Discord DM\n&f/2fa setup telegram &7- codes via Telegram\n&f/2fa confirm <code> &7- finish the setup\n&f/2fa backup <password> &7- get a new set of one-time backup codes\n&f/2fa disable <password> &7- turn 2FA off\n&f/2fa status &7- show your current method"
+  disable-usage: "&7Usage: &f/2fa disable <password>"
+  method-disabled: "&7This 2FA method is disabled on this server."
+  discord-usage: "&7Usage: &f/2fa setup discord <your Discord user ID>\n&7Discord - Settings - Advanced - enable Developer Mode,\n&7then right-click your name and 'Copy User ID'."
+  sending: "&7Sending a confirmation code..."
+  discord-code-sent: "&fCode sent to your Discord DMs! &7Finish with &f/2fa confirm <code>"
+  discord-dm-failed: "&7Could not DM you on Discord. Check the ID and make sure you share a server with the bot and allow DMs."
+  telegram-instructions: "&7Open Telegram, find &f@%bot% &7and send it this code:\n&f&l%code%\n&7The link completes automatically."
+  totp-setup: "&7Google Authenticator setup started!\n&7Secret key: &f%secret%\n&7Add it in your authenticator app (or scan the QR map),\n&7then finish with &f/2fa confirm <code from the app>"
+  totp-map: "&7A QR map was put in your hand. &fHold it and look at it &7- the QR code appears on the map. Scan it with the Google Authenticator app (no setup needed first), then enter &f/2fa confirm <code>&7. The map disappears automatically."
+  nothing-to-confirm: "&7Nothing to confirm. Start with &f/2fa setup <method>"
+  wrong-code: "&7That code is &fnot valid&7."
+  enabled: "&f2FA via %method% &7is now protecting your account!"
+  not-enabled: "&7You don't have 2FA enabled."
+  wrong-password: "&fWrong password."
+  disabled: "&72FA has been &fdisabled &7for your account."
+  status: "&7Your 2FA method: &f%method%"
+  prompt-totp: "&fEnter the code from your app: &e/2fa <code>"
+  prompt-code: "&fCode sent via &e%method%&f. Enter it: &e/2fa <code>"
+  prompt-generic: "&7Almost there - enter your 2FA code: &f/2fa <code> &7(or /2fa resend)"
+  code-sent: "&7A login code was sent via &f%method%&7."
+  code-send-failed: "&7The code could not be delivered. Try &f/2fa resend &7or contact an admin."
+  resend-cooldown: "&7Please wait a moment before requesting another code."
+  backup-usage: "&7Usage: &f/2fa backup <password>"
+  backup-codes: "&7Your one-time backup codes:\n&f%codes%\n&7If you ever lose your 2FA device, one of these logs you in like a\n&7normal code: &f/2fa XXXX-XXXX-XXXX&7. Each code works &fonce&7.\n&7Save them now - they are shown only this one time!"
+  backup-used: "&fBackup code accepted! &7You have &f%left% &7left. Lost your device? Set up 2FA again: &f/2fa setup"
+  status-backup: "&7Backup codes left: &f%left% &7- new set: &f/2fa backup <password>"
+  backup-outdated: "&7Your backup codes use the &fold, weaker format&7. They still work, but please replace them: &f/2fa backup <password>"
+  required: "&7This server requires &f2FA for staff accounts&7. Pick a method:\n&f/2fa setup totp &7- Google Authenticator (offline app)\n&f/2fa setup discord <your Discord ID> &7- codes via Discord DM\n&f/2fa setup telegram &7- codes via Telegram\n&7You can play as soon as 2FA is active."
+  required-reminder: "&7Please set up 2FA first: &f/2fa setup <method>"
+  required-done: "&fThank you! &7Your account is protected - have fun!"
+  not-awaiting: "&7You are not being asked for a 2FA code right now."
+  reminder: "&7Enter your 2FA code: &f/2fa <code>"
+
+protection:
+  chat-blocked: "&cBạn cần nhập mật khẩu trước khi trò chuyện!"
+  command-blocked: "&cBạn cần nhập mật khẩu trước khi dùng lệnh!"
+
+email:
+  usage: "&7E-mail commands:\n&f/email set <address> &7- link a recovery e-mail\n&f/email confirm <code> &7- finish linking\n&f/email remove <password> &7- unlink\n&f/email recovery &7- reset a forgotten password"
+  invalid: "&7That does not look like a &fvalid e-mail address&7."
+  disabled: "&7E-mail recovery is &fnot enabled &7on this server."
+  sending: "&7Sending an e-mail..."
+  confirm-sent: "&7A confirmation code was sent to &f%email%&7. Finish with &f/email confirm <code>"
+  confirmed: "&fRecovery e-mail saved. &7If you ever forget your password, use &f/email recovery"
+  nothing-to-confirm: "&7Nothing to confirm. Start with &f/email set <address>"
+  wrong-code: "&7That code is &fnot valid&7."
+  removed: "&7Recovery e-mail &fremoved&7."
+  none-set: "&7No recovery e-mail is linked to this account."
+  not-recovering: "&7Recovery only works on the &flogin screen &7of a registered account."
+  recovery-sent: "&7A recovery code was sent to &f%email%&7.\n&7Reset with &f/email recovery <code> <newPassword> <newPassword>"
+  recovery-usage: "&7Usage: &f/email recovery <code> <newPassword> <newPassword>"
+  cooldown: "&7Please wait a moment before requesting another e-mail."
+  send-failed: "&7The e-mail could not be sent. Please contact an admin."
+  recovered: "&fPassword reset successful!"
+
+premium:
+  help: "&7Premium mode:\n&f/premium &7- log in automatically with a paid, Mojang-verified account (no password needed)\n&7Works only when the server or its proxy verifies Mojang sessions (online mode).\n&7Your password stays saved - turn this off any time with &f/freemium"
+  checking: "&7Checking your Mojang account..."
+  enabled: "&fPremium mode enabled! &7You will be logged in automatically from now on."
+  already: "&7Premium mode is already enabled for your account."
+  disabled-by-server: "&7Premium mode is disabled on this server."
+  not-verified: "&7Your connection is &fnot Mojang-verified&7, so premium mode cannot be enabled.\n&7It requires an online-mode server or an online-mode proxy with IP forwarding."
+  connection-not-verified: "&7This server cannot &fprove &7that connections were verified by Mojang, so password-free login is refused.\n&7It needs online-mode, or a proxy using Velocity modern forwarding.\n&7(Legacy BungeeCord forwarding is unsigned and can be spoofed.)"
+  no-mojang-account: "&7No paid Mojang account owns the name &f%name%&7."
+  mojang-mismatch: "&7Your profile does not match the Mojang account named &f%name%&7."
+  verify-failed: "&7Could not reach Mojang to verify your account. Try again later."
+  auto-login: "&fPremium account verified &7- logged in automatically."
+
+freemium:
+  help: "&7Freemium mode:\n&f/freemium &7- turn premium auto-login off and log in with your password again"
+  success: "&fPremium mode disabled. &7You will log in with your password again."
+  not-premium: "&7Premium mode is not enabled for your account."
+
+error:
+  players-only: "&7This command can only be used by players."
+  busy: "&7Please wait a moment..."
+  database: "&7A storage error occurred. Please tell an admin."
+  not-logged-in: "&7You must be logged in to do that."
+  no-permission: "&7You don't have permission to do that."
+  verify-locked: "&7Too many wrong passwords. Try again in a few minutes."
+
+# Kick screens (no prefix is added to these).
+kick:
+  timeout: "&fYou took too long to log in.\n&7Please reconnect and try again."
+  too-many-attempts: "&fToo many wrong attempts."
+  ip-locked: "&fToo many failed logins.\n&7Your IP is blocked for &f%minutes% &7minutes."
+  invalid-name: "&fYour username contains invalid characters."
+  wrong-case: "&fWrong capitalisation!\n&7This account is registered as &f%correct%&7."
+  database-error: "&fThe server could not load your account.\n&7Please try again in a moment."
+  unregistered: "&fYour account was deleted.\n&7Reconnect to register again."
+  antibot: "&fToo many connections from your IP.\n&7Please wait a moment and try again."
+  antibot-lockdown: "&fThe server is being flooded by bots.\n&7Only registered players can join right now. Try again in a minute."
+  too-many-online-per-ip: "&fToo many players are already online from your IP address."
+  country-blocked: "&fThis server is not available in your country."
+  already-online: "&fSomeone with your name is already on this server."
+  uuid-mismatch: "&fYour game profile does not match this account."
+  login-denied: "&fThis login was denied via Telegram."
+
+# On-screen titles (no prefix is added to these).
+# After-login MOTD. One list entry = one chat line.
+# A line may end with a click action:
+#   [url:https://...]  - open the link
+#   [run:/menu]        - run the command
+# %player% inserts the name. Delay lives in config.yml, protection.motd.
+motd:
+  lines:
+    - ""
+
+title:
+  login: "&fLogin required"
+  login-sub: "&7/login <password>"
+  register: "&fWelcome!"
+  register-sub: "&7/register <password> <password>"
+  welcome: "&fLogged in!"
+  session: "&fSession restored"
+  session-sub: "&7Welcome back - no login needed"
+
+admin:
+  usage: "&7Admin commands:\n&f/loginplus reload &7- reload config and messages\n&f/loginplus forcelogin <player> &7- log a player in manually\n&f/loginplus unregister <player> &7- delete a player's account\n&f/loginplus info <player> &7- show account details\n&f/loginplus 2fa reset <player> &7- clear a player's 2FA (lost device / lost secret.key)\n&f/loginplus import <authme|nlogin> &7- migrate accounts from another auth plugin"
+  2fa-usage: "&7Usage: &f/loginplus 2fa reset <player>"
+  2fa-reset: "&72FA cleared for &f%player%&7. They can set it up again with &f/2fa setup&7."
+  2fa-not-enabled: "&f%player% &7does not have 2FA enabled."
+  import-usage: "&7Usage: &f/loginplus import <authme|nlogin> [file]"
+  import-running: "&7An import is already running - please wait."
+  import-not-found: "&7Database file not found: &f%file%"
+  import-started: "&7Importing accounts from &f%file%&7... this can take a while."
+  import-done: "&fImport finished! &7Imported: &f%imported%&7, skipped (already registered or empty): &f%skipped%&7.\n&7Imported passwords are upgraded to Argon2id at each player's first login.\n&7Accounts with an unsupported hash format: &f%unsupported% &7(those players need &f/email recovery &7or an admin reset)."
+  import-failed: "&7Import failed: &f%error%"
+  reloaded: "&fLogin+ config and messages reloaded."
+  player-not-found: "&7That player/account was not found."
+  already-logged-in: "&7That player is already logged in."
+  not-registered: "&7That player has no account yet."
+  forced: "&7Force-logged-in &f%player%&7."
+  unregistered: "&7Account of &f%player% &7deleted."
+  info: "&7Account: &f%player%\n&7Registered: &f%registered%\n&7Last login: &f%lastlogin%\n&7Last IP: &f%ip%\n&72FA method: &f%method%"
+
+# E-mails sent by the recovery system (plain text, no color codes!).
+mail:
+  confirm-subject: "[%server%] Confirm your recovery e-mail"
+  confirm-body: "Hello %player%,\n\nyour confirmation code is: %code%\n\nEnter it in-game with /email confirm <code> to finish linking this address to your Minecraft account.\n\nIf you did not request this, simply ignore this e-mail.\n\n%server%"
+  recovery-subject: "[%server%] Your password recovery code"
+  recovery-body: "Hello %player%,\n\nyour password recovery code is: %code%\n\nEnter it in-game:\n/email recovery <code> <newPassword> <newPassword>\n\nIf you did not request this, someone tried to recover your account - you can safely ignore this e-mail, your password was NOT changed.\n\n%server%"
+
+# Texts delivered to Discord / Telegram (no color codes here!).
+alerts:
+  login-code: "[%server%] Your Minecraft login code: %code% - if this wasn't you, someone knows your password! Change it immediately."
+  discord-setup-code: "[%server%] Your 2FA setup confirmation code: %code%"
+  telegram-linked: "[%server%] This Telegram account is now linked to the Minecraft account '%player%'. You will receive login codes and security alerts here."
+  approve-button: "✅ It's me"
+  deny-button: "❌ Not me"
+  button-approved: "Login approved!"
+  button-denied: "Login denied. Change your password!"
+  button-expired: "This request has expired."
+  backup-code-used: "[%server%] A one-time backup code was just used to log into your account '%player%'. If this wasn't you, change your password and set up 2FA again immediately!"
+  new-ip: "[%server%] Security alert: your account '%player%' just logged in from a NEW IP address (%ip%). If this wasn't you, change your password now!"
+  failed-logins: "[%server%] Security alert: repeated failed login attempts on your account '%player%' (IP: %ip%). Your account is safe, but stay alert."
+  password-changed: "[%server%] The password of your account '%player%' was just changed. If this wasn't you, contact the server staff immediately!"

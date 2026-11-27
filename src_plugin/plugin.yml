@@ -1,0 +1,108 @@
+name: ChillCore
+version: 1.0
+main: chill.spawn.Main
+api-version: 1.20
+commands:
+  pvp:
+    description: Dich chuyen toi dau truong PvP 1v1
+  crate:
+    description: Spin crate
+  nhiemvu:
+    description: Xem nhiem vu hang ngay
+  daily:
+    description: Claim daily reward
+  getkey:
+    description: Withdraw money to get crate key
+  moneykey:
+    description: Withdraw money to get crate key
+  setkeytien:
+    description: Dat ruong quay thuong bang key tien
+  xaydautruong:
+    description: Tu dong xay dau truong PvP 1v1
+  diemdanh:
+    description: Diem danh nhan qua
+  quest:
+    description: Nhiem vu hang ngay
+  ruttiennhankey:
+    description: Rut tien tao key quay thuong
+  lang:
+    description: Select language
+  tieng:
+    description: Chon ngon ngu
+  chillview:
+    description: Xem do khoe
+  ec:
+    description: Mo ruong Ender
+  thoatsinhton:
+    description: Thoat sinh ton
+  givephieu:
+    description: Lay phieu tien
+  sellgui:
+    description: Ban do
+  tien:
+    description: Xem tien
+  pay:
+    description: Chuyen tien
+  shop:
+    description: Cua hang
+  addtien:
+    description: Cong tien
+  deltien:
+    description: Tru tien
+  ah:
+    description: Cho den
+  code:
+    description: Giftcode
+  rtp:
+    description: Dich chuyen ngau nhien
+  sethome:
+    description: Dat nha
+  home:
+    description: Ve nha
+  delhome:
+    description: Xoa nha
+  tpa:
+    description: Xin dich chuyen
+  tpaccept:
+    description: Dong y dich chuyen
+  setspawn:
+    description: Dat spawn
+  spawn:
+    description: Ve spawn
+  register:
+    description: Dang ky
+  login:
+    description: Dang nhap
+  resetmk:
+    description: Xoa mat khau
+  setmk:
+    description: Dat mat khau cho nguoi choi
+  setserverpass:
+    description: Dat mat khau sever
+  msg:
+    description: Nhan tin rieng
+  r:
+    description: Tra loi tin nhan
+  create:
+    description: Tao Clan
+  invite:
+    description: Moi vao Clan
+  join:
+    description: Vao Clan
+  clan:
+    description: Quan ly Clan
+  cc:
+    description: Chat Clan
+  viewclan:
+    description: Xem thanh vien va tien trong Clan
+  claimkeyreward:
+    description: Nhan 1 Key Reward mien phi hang ngay
+  setcrate:
+    description: Dat ruong quay thuong
+  givekey:
+    description: Cap Key Reward
+  helpchillmc:
+    description: Bang huong dan lenh Chill MC
+  helpclan:
+    description: Bang huong dan lenh Clan
+

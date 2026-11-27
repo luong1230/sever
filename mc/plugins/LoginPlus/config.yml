@@ -1,0 +1,414 @@
+# ╔═══════════════════════════════════════════════════════════════════════╗
+# ║                                Login+                                  ║
+# ║         Secure & modern authentication for Minecraft servers           ║
+# ║                    Supports Spigot/Paper 1.8 → 1.21+                   ║
+# ╚═══════════════════════════════════════════════════════════════════════╝
+#
+#  QUICK START
+#   1. Drop the jar into /plugins and restart the server.
+#   2. Players use /register <password> <password>, then /login <password>.
+#   3. (Optional) Enable free 2FA below: Google Authenticator, Discord, Telegram.
+#
+#  All player-visible text can be edited in messages_en.yml / messages_ru.yml.
+
+# ─────────────────────────────── LANGUAGE ────────────────────────────────
+# Language of all player-visible messages: "en" English, "ru" Russian.
+# The texts live in plugins/LoginPlus/messages_en.yml and messages_ru.yml.
+language: "en"
+
+# ─────────────────────────────── STORAGE ─────────────────────────────────
+# Where accounts are stored. Passwords are ALWAYS stored as Argon2id hashes,
+# never as readable text - not even the server owner can recover them.
+#
+#  ── plugins/LoginPlus/secret.key ──
+#  Two things in an auth database cannot be hashed: a TOTP secret has to be
+#  recoverable to compute the 6-digit code, and a backup code is short enough
+#  to brute-force. So Login+ keeps a key OUTSIDE the database and uses it to
+#  encrypt TOTP secrets (AES-256-GCM) and to key the backup-code digests
+#  (HMAC-SHA256). Someone who steals accounts.db or a mysqldump gets neither
+#  working 2FA secrets nor crackable backup codes.
+#
+#  * The file is created automatically on first start.
+#  * BACK IT UP with your database - it is not included in the automatic
+#    SQLite backups on purpose (a backup that contains the key it protects
+#    protects nothing).
+#  * Never share it, and never put it in a public git repository.
+#  * If you lose it, existing 2FA enrolments cannot be read any more. Reset
+#    the affected players with: /loginplus 2fa reset <player>
+#  * On a MySQL network, keep the same secret.key on every backend.
+#   SQLITE → zero setup, saved to plugins/LoginPlus/accounts.db (recommended)
+#   MYSQL  → for networks / several servers sharing one account database
+storage:
+  type: SQLITE
+  table-prefix: "lp_"
+  # Automatic backups of the SQLite database. Written to
+  # plugins/LoginPlus/backups/, the oldest copies are deleted automatically.
+  # (MySQL cannot be backed up this way - use mysqldump there instead.)
+  backup:
+    enabled: true
+    interval-hours: 24
+    keep: 7
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "minecraft"
+    username: "root"
+    password: ""
+    # Extra JDBC parameters. Only change this if you know what you are doing.
+    jdbc-params: "?useSSL=false&characterEncoding=utf8"
+
+# ─────────────────────────────── SECURITY ────────────────────────────────
+security:
+  password:
+    # Length is the setting that actually stops guessing (NIST SP 800-63B).
+    # A high minimum plus the deny-list below beats "must contain a capital
+    # and a symbol", which mostly produces "Passw0rd!" and pushes people
+    # away from long, genuinely strong passphrases.
+    min-length: 4
+    max-length: 128
+    # Passwords at least this long skip the shape rules further down
+    # entirely: "correct horse battery staple" must never be rejected for
+    # lacking punctuation.
+    passphrase-length: 16
+    # Passwords are hashed with Argon2id - winner of the Password Hashing
+    # Competition and OWASP's first-choice recommendation. Its memory-hard
+    # design makes large-scale GPU brute-force attacks impractical against your database.
+    # The defaults below follow the OWASP baseline (19 MiB, 2 iterations).
+    # On a powerful dedicated machine you can raise this to the RFC 9106
+    # profile: memory-kib: 65536, iterations: 3, parallelism: 4.
+    argon2:
+      # Memory used per hash, in KiB (19456 KiB = 19 MiB).
+      memory-kib: 1024
+      # Number of passes over that memory.
+      iterations: 1
+      # Parallel lanes. Keep at 1 unless you raised memory a lot.
+      parallelism: 1
+    # Refuse extremely common passwords such as "123456" or "password".
+    deny-common-passwords: false
+    # Add your own forbidden passwords here, one per line:
+    #   - "myservername"
+    extra-denied-passwords: []
+    # Require at least one CAPITAL letter (rejects "password1!").
+    # Off by default on purpose - see the note above min-length. Turn on
+    # only if a policy forces you to; it makes passwords weaker in practice.
+    require-uppercase: false
+    # Require at least one special character like ! ? # (rejects "Password1").
+    require-symbol: false
+    # Reject repeated or sequential characters: "0000", "aaa", "1234", "abcd".
+    block-sequences: false
+  login:
+    # Wrong password attempts before the player is kicked.
+    max-attempts: 3
+    # Seconds a player has to log in / register before being kicked.
+    timeout-seconds: 60
+    # How often (in seconds) the "please log in" reminder repeats.
+    reminder-interval-seconds: 10
+    # Countdown above the hotbar showing how long is left before the
+    # login timeout kicks in. Deliberately not in chat - the login
+    # prompts already live there.
+    countdown-in-actionbar: true
+  brute-force:
+    # After this many failed logins from one IP address ...
+    max-attempts-per-ip: 6
+    # ... that IP cannot join the server for this many minutes.
+    lockout-minutes: 10
+  # Built-in protection against bot/join-flood attacks. Three layers:
+  # a per-IP connection throttle, a per-IP online cap, and a server-wide
+  # lockdown that only lets registered players in while a flood is running.
+  antibot:
+    enabled: true
+    # More total connections than this within 10 seconds = bot attack.
+    max-joins-per-10s: 12
+    # How long the "registered players only" lockdown lasts once triggered.
+    lockdown-seconds: 120
+    # One IP may attempt at most this many connections per 10 seconds.
+    max-joins-per-ip-per-10s: 4
+    # Maximum players online at once from the same IP (0 = no limit).
+    # Keep this >= max-accounts-per-ip or siblings can lock each other out.
+    max-online-per-ip: 0
+  # Allow or block joins by country (two-letter ISO codes: DE, US, BR ...).
+  # The country of an IP is fetched from a free geolocation API on the async
+  # login thread and cached for hours - LAN/localhost IPs are always allowed.
+  country-filter:
+    # OFF | WHITELIST (only listed countries may join) | BLACKLIST (listed
+    # countries are blocked).
+    mode: "OFF"
+    countries: ["DE", "AT", "CH"]
+    # If the lookup service is unreachable: ALLOW the player in, or DENY.
+    # DENY is the strict setting: if the lookup service is down or rate-
+    # limits you, the filter must not quietly stop blocking anyone - that is
+    # exactly when an attacker wants it off. Switch to ALLOW only if you
+    # would rather risk letting people in than lock everyone out.
+    on-lookup-failure: "DENY"
+    # IMPORTANT: keep this on https://. Over plaintext http:// the country
+    # answer is unauthenticated, so anyone on the network path (a hoster, an
+    # ISP) can forge "this player is in an allowed country" and walk straight
+    # through a whitelist. Login+ warns on startup if you use http://.
+    #
+    # PRIVACY: every lookup sends a player's IP address to this third party.
+    # Enabling the filter is your decision to share that data.
+    #
+    # Any endpoint answering JSON with "country"/"countryCode", a bare
+    # two-letter code, or "success\n<CODE>" works. %ip% is replaced.
+    api-url: "https://api.country.is/%ip%"
+  # Maximum accounts that can be registered from the same IP address.
+  # Set to 0 to disable the limit.
+  max-accounts-per-ip: 0
+  # Intercept /login, /register etc. so passwords NEVER appear in the
+  # server console or in log files. Strongly recommended.
+  hide-auth-commands-from-console: true
+  # Kick "NoTcH" if the account was registered as "Notch"
+  # (prevents impersonation on offline-mode servers).
+  kick-on-wrong-username-case: true
+  # Deny a join when someone with the same name (ignoring case) is already
+  # online - stops a spoofer from sneaking in next to the real player.
+  block-duplicate-names: true
+  # Kick when the joining profile's UUID differs from the one stored for the
+  # account. Useful extra spoofing protection on premium (online-mode/Velocity
+  # modern forwarding) servers. Leave OFF if you ever switch between
+  # online-mode and offline-mode, because that changes every UUID.
+  kick-on-uuid-mismatch: false
+  # Player names must fully match this pattern to join at all (anti-bot).
+  username-regex: "[a-zA-Z0-9_]{3,16}"
+  # Append-only security journal in plugins/LoginPlus/audit.log: logins and
+  # failures, password and 2FA changes, e-mail recovery, IP lockouts, and
+  # every admin override (/loginplus forcelogin, unregister, 2fa reset).
+  # Without it an abused staff account leaves no trace at all.
+  audit-log: true
+
+# ─────────────────────────────── SESSIONS ────────────────────────────────
+# If a player disconnects and comes back quickly from the SAME IP address,
+# they are logged in automatically - no password needed.
+# Sessions are stored in the database, so they even survive a server restart.
+#
+# OFF BY DEFAULT, deliberately. On an offline-mode server "same IP" is not
+# proof of identity: flatmates, a school or office network, a shared VPN exit
+# and carrier-grade NAT all put strangers behind one address - and CGNAT,
+# which most mobile networks use, can put thousands there. Anyone sharing the
+# address can then walk into the account within the timeout below.
+#
+# Whatever you set here, a resumed session only ever skips the PASSWORD.
+# If the account has 2FA, the second factor is still required.
+session:
+  enabled: false
+  timeout-minutes: 5
+  # Also require the same game profile (UUID), not just the same address.
+  # Turn this off only if you switch between online-mode and offline-mode,
+  # because that changes every player's UUID.
+  require-same-uuid: true
+
+# ────────────────────────────── PROTECTION ───────────────────────────────
+# What happens to players who have not logged in yet. They can never move,
+# break blocks, use the inventory, take or deal damage, or run commands.
+protection:
+  # Empty the player's inventory until they log in. The items are kept safe
+  # (also on disk, so even a server crash cannot lose them) and handed back
+  # right after a successful login.
+  protect-inventory: true
+  # Park players at the world spawn while they log in. Hides base coordinates
+  # from bots and stream snipers.
+  teleport-to-spawn: true
+  # What happens AFTER a successful login:
+  #   true  -> teleport the player back to where they logged out.
+  #            Right for survival/anarchy - nobody wants to be dragged to
+  #            spawn every single session. The quit location is stored in
+  #            the database, so it survives a crash.
+  #   false -> leave the player at the world spawn.
+  #            Right for a lobby/hub, where the spawn point IS where everyone
+  #            belongs and returning people to "wherever they stood last" is
+  #            just confusing.
+  # Ignored when teleport-to-spawn is false (then nobody is moved at all).
+  return-to-last-location: true
+  # Blind players until they authenticate (hides the world from bots).
+  # Applied at the earliest possible moment on join, re-applied every second,
+  # so other plugins clearing potion effects cannot undo it.
+  blindness: true
+  # Players who are not logged in cannot see the chat.
+  hide-chat: true
+  # Show big on-screen titles.
+  # (Works on 1.8.8+ where the server supports titles; otherwise skipped.)
+  use-titles: true
+  # Which moments actually get a title. The master switch above turns all of
+  # them off at once; these pick individually. Every text lives in
+  # messages_en.yml / messages_ru.yml under "title:".
+  titles:
+    # "Login required" while the player is on the login screen.
+    login-prompt: true
+    # "Welcome!" while the player still has to register.
+    register-prompt: true
+    # "Logged in!" after a normal password login.
+    welcome: true
+    # "Session restored" when a session let the player skip the password.
+    # Set login-prompt: false and this one true if you only want players
+    # told when something actually happened.
+    session-resumed: true
+  # Also confirm a resumed session in chat ("Session restored - welcome
+  # back!"). Independent of the title above, so you can have either, both,
+  # or neither.
+  session-resumed-chat: true
+  # MOTD shown after a successful login. The text itself lives in
+  # messages_*.yml under "motd.text" - one string, \n starts a new line.
+  # The delay exists because the first moment after login belongs to the
+  # join titles and the server switch; a MOTD printed there is scrolled
+  # away before anyone reads it. Set 0 to send it immediately.
+  motd: []
+  # Extra commands players may use BEFORE logging in.
+  # /login, /register and /2fa are always allowed. Example:
+  #   - "rules"
+  allowed-commands: []
+
+# ─────────────────────────────── SOUNDS ──────────────────────────────────
+# Audible feedback: a level-up chime on successful login/registration and a
+# villager buzzer on wrong passwords/codes. Names adapt to the server version.
+sounds:
+  enabled: true
+
+# ─────────────────────── TWO-FACTOR AUTH (ALL FREE) ───────────────────────
+# Players enable 2FA for themselves with /2fa setup <method>.
+# One method can be active per account at a time.
+two-factor:
+  # Name shown inside authenticator apps and in code messages.
+  issuer: "My Minecraft Server"
+  # Seconds a Discord/Telegram login code stays valid.
+  code-expiry-seconds: 300
+  totp:
+    # Google Authenticator / Authy / any TOTP app. Works 100% offline.
+    enabled: true
+    # Hand the player an in-game MAP showing a scannable QR code. Magic!
+    # If map rendering is unavailable, the secret key is shown in chat instead.
+    give-qr-map: true
+  discord:
+    # Login codes are sent as a Discord DM by your own bot.
+    #  1. Create a bot: https://discord.com/developers/applications
+    #     → New Application → Bot → Reset Token → copy it below.
+    #  2. Invite the bot to your community Discord server
+    #     (bots can only DM people they share a server with).
+    #  3. Players link with: /2fa setup discord <their Discord user ID>
+    #     (Discord → Settings → Advanced → Developer Mode → right-click
+    #      your own name → Copy User ID)
+    enabled: false
+    bot-token: ""
+  telegram:
+    # Login codes are sent by your own Telegram bot.
+    #  1. In Telegram, message @BotFather, send /newbot, follow the steps.
+    #  2. Paste the token and the bot's username (without @) below.
+    #  3. Players link with: /2fa setup telegram
+    #     and then send the code shown in-game to your bot.
+    enabled: false
+    bot-token: ""
+    bot-username: "MyServerBot"
+    # Login requests arrive with ✅/❌ buttons - one tap approves the login,
+    # no code typing needed. Typing the code still works as a fallback.
+    one-tap-approve: true
+  # Force staff to protect their accounts with 2FA. Affected players are
+  # frozen after logging in until they finish /2fa setup. Anyone with the
+  # permission 'loginplus.require2fa' is affected (give it to your staff
+  # group in LuckPerms); the switch below additionally covers all operators.
+  require-for-staff:
+    ops: false
+
+# ─────────────────────────────── PREMIUM MODE ─────────────────────────────
+# /premium lets players with a paid Mojang account skip the password login;
+# /freemium turns it back off. Their password always stays saved.
+#
+# HONEST SECURITY NOTE: a plugin can only trust "premium" when Mojang really
+# verified the connection. That is the case when this server runs
+# online-mode: true, or when it sits behind an online-mode proxy
+# (Velocity/BungeeCord) with IP forwarding (the verified profile arrives as
+# a version-4 UUID). On a plain offline-mode server there is nothing to
+# verify, so /premium politely refuses instead of pretending to be secure.
+#
+# OFF BY DEFAULT. A version-4 UUID only means something if something
+# trustworthy put it there:
+#   online-mode: true              -> the server itself asked Mojang. Trusted.
+#   Velocity "modern" forwarding   -> the proxy signs the profile with a
+#                                     shared secret this backend verifies.
+#                                     Trusted.
+#   BungeeCord/Waterfall legacy    -> the profile is unsigned handshake text.
+#                                     Anyone who can reach the backend port
+#                                     directly can claim any name and any
+#                                     UUID. NOT trusted - a firewall may
+#                                     stop that, but the plugin cannot check
+#                                     your firewall, so it will not assume.
+#   plain offline-mode             -> nothing to verify.
+# Login+ detects which of these applies and prints it on startup.
+premium:
+  enabled: false
+  # Also cross-check the name against the Mojang API when /premium is used.
+  verify-with-mojang-api: true
+  # Refuse password-free login unless the connection is provably verified
+  # (see above). Turning this off means trusting your network setup blindly.
+  require-verified-connection: true
+
+# ─────────────────────────── E-MAIL RECOVERY ──────────────────────────────
+# Players link an e-mail address with /email set <address> (a confirmation
+# code is mailed to them, so typos cannot lock anyone out). If they forget
+# their password: /email recovery mails a one-time code, then
+# /email recovery <code> <newPassword> <newPassword> sets a new one.
+# 2FA, if the account has it, still applies after a recovery - an e-mail
+# inbox alone can never bypass 2FA.
+#
+# Works with any normal SMTP mailbox. Gmail example:
+#   host: smtp.gmail.com, port: 587, security: STARTTLS,
+#   username: you@gmail.com, password: an "app password"
+#   (Google account - Security - 2-Step Verification - App passwords).
+email:
+  enabled: false
+  # Minutes a mailed code stays valid.
+  code-expiry-minutes: 15
+  # Seconds a player must wait between two e-mails (anti-spam).
+  resend-cooldown-seconds: 120
+  smtp:
+    host: ""
+    port: 587
+    # STARTTLS (port 587) | SSL (port 465) | NONE (port 25, not recommended)
+    security: "STARTTLS"
+    username: ""
+    password: ""
+    # The sender address, usually the same as username.
+    from: ""
+    from-name: "My Minecraft Server"
+
+# ─────────────────────────── PROXY NETWORKS ──────────────────────────────
+proxy:
+  # Tell the proxy when a player has authenticated here.
+  #
+  # LoginPlus-Velocity.jar on the proxy keeps every player locked - no chat,
+  # no commands, no switching servers - until this backend sends that
+  # message. It fails closed on purpose: a backend that does not run Login+
+  # can never become a way into your network.
+  #
+  # It also forwards the player's /premium flag, which is what lets the
+  # proxy ask Mojang to verify them on their next connection. That is the
+  # only place a Minecraft network can genuinely prove who someone is.
+  #
+  # Only registers when a proxy is actually detected, so leaving it on
+  # costs a standalone server nothing.
+  bridge: true
+
+# Login+ fully supports Waterfall, Velocity and BungeeCord networks:
+#  1. Enable IP forwarding on BOTH sides:
+#     - Waterfall/BungeeCord: proxy config.yml 'ip_forward: true'
+#       + backend spigot.yml 'settings.bungeecord: true'
+#     - Velocity: velocity.toml 'player-info-forwarding-mode = "modern"'
+#       + backend config/paper-global.yml 'proxies.velocity' section
+#  2. For multi-server networks use MYSQL storage (top of this file) and
+#     point every backend at the same database. Sessions then carry across
+#     servers: players switching between backends stay logged in seamlessly.
+#  3. IMPORTANT: firewall the backend ports so players can ONLY connect
+#     through the proxy - otherwise IP forwarding can be spoofed.
+# Login+ checks your setup on startup and prints hints in the console.
+
+# ───────────────────────────── SECURITY ALERTS ────────────────────────────
+# If a player linked Discord or Telegram, Login+ warns them about suspicious
+# activity on their account - even while they are offline.
+alerts:
+  # Someone logged into their account from a NEW IP address.
+  new-ip-login: true
+  # Someone failed the password too many times / triggered the IP lockout.
+  failed-logins: true
+  # The account password was changed.
+  password-changed: true
+
+# Internal - do not touch. Used for future config upgrades.
+config-version: 2
